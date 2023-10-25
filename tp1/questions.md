@@ -23,3 +23,26 @@ print(np.asarray((unique, counts)).T)
 ```
 
 ----------------------------------------------------------
+
+Est-ce que les namedtuples peuvent avoir des membres variable ?
+
+Réponse: Non, tout les attributs d'un named tuple sont immutable.
+
+```python
+from collections import namedtuple
+Student = namedtuple("Student", "name grades")
+s1 = Student("Fabrice", [1, 2, 3, 4, 5, 6])
+# Va retourner une erreur: immutable
+s1.grades = [5, 5, 5, 5, 5, 5]
+```
+
+----------------------------------------------------------
+
+Comment faire un PCA avec scikit-learn ?
+
+```python
+from sklearn.decomposition import KernelPCA
+kpca = KernelPCA(n_components = 2, kernel = 'rbf')
+X_train = kpca.fit_transform(X_train)
+X_test = kpca.transform(X_test)
+```
