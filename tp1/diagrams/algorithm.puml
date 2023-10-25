@@ -1,0 +1,13 @@
+@startuml
+scale 10
+
+start
+:preprocessing();
+:collect_coocurence_count();
+:smooth();
+:weight();
+:PCA();
+:find_most_similar_words();
+end
+
+@enduml
