@@ -1,17 +1,20 @@
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import KernelPCA
-from functools import reduce
-import numpy as np  # for storing the count
 from collections.abc import Callable
+from collections import namedtuple
+from functools import reduce
+import pandas as pd
+import numpy as np
 import sys
 
 Plot = Callable
 Similar = list[tuple[str, str]]
-Matrix = list
+Matrix = pd.DataFrame
+Data = namedtuple("Data", "text B T")
 
 
 def remove_punctuation(token: str) -> str:
-    punctuations = [".", ",", "'"]
+    punctuations = [".", ",", "'", "-"]
     return reduce(lambda acc, x: acc.replace(x, ""), punctuations, token)
 
 
@@ -31,34 +34,56 @@ def get_word_set(name: str) -> list[str]:
     return check_word_set(text)
 
 
-def get_neighbours(text: list[str], i: int, T: list[str], B: list[str], side_length: int) -> list[tuple[str, str]]:
-    if text[i] not in T:
+def get_neighbours(configuration: Data, i: int, side_length: int) -> list[tuple[str, str]]:
+    if configuration.text[i] not in configuration.T:
         return []
     else:
-        words = text[i-side_length:i] + text[i+1:i+side_length]
-        return [(text[i], word) for word in filter(lambda x: x in B, words)]
+        words = configuration.text[i-side_length:i] + configuration.text[i+1:i+side_length]
+        # I don't return a real tuple because np.unique encode it strangelly later
+        return [f"{configuration.text[i]},{word}" for word in filter(lambda x: x in configuration.B, words)]
 
 
-def PMI(text, T, B, unique, counts):
-    # val = log2(counts/(text.probe_count(A)*text.prob_count(B)))
-    return (unique, counts)
+def PMI(configuration: Data, df: pd.DataFrame) -> pd.DataFrame:
+    # val = log2(counts/(configuraiton.text.probe_count(A)*configuration.text.prob_count(B)))
+    # TODO : implement the method to gain a weight that's more representative
+    return df
 
 
-def co_occurence_matrix(text: list[str], T: list[str], B: list[str], weights, window: int) -> Matrix:
-    # On commence à la position 2 (fenêtre de 5)
-    # On fini à la position (n-1) - 2 (fenêtre de 5)
-    # TODO : Check if window is odd
-    # TODO : use the weights parameter
+def create_counter(list_of_couples: list[str]) -> pd.DataFrame:
+    unique, counts = np.unique(list_of_couples, return_counts=True)
+    terms = [couple.split(",")[0] for couple in unique]
+    related = [couple.split(",")[1] for couple in unique]
+    return pd.DataFrame({'terms': terms, 'related': related, 'counts': counts})
+
+
+def get_count(counter: pd.DataFrame, term: str, word: str):
+    ligne = (counter['terms'] == term) & (counter['related'] == word)
+    values = counter.loc[ligne, 'counts'].values
+    return values[0] if len(values) > 0 else 0
+
+
+def get_encode(counter: pd.DataFrame, word: str, T: list[str]) -> list[int]:
+    return [get_count(counter, term, word) for term in T]
+
+
+def co_occurence_matrix(configuration: Data, weights, window: int) -> Matrix:
+    # We start at position 2 (window of 5)
+    # We end up at position (n-1) - 2 (window of 5)
+    if window % 2 != 1:
+        raise Exception("The window's size should be a odd number")
     side_length = window // 2
-    unique, counts = np.unique(reduce(lambda x, y: x + y,
-           [get_neighbours(text, i, T, B, side_length)
-            for i in range(side_length, len(text) - (1+side_length))]), return_counts=True)
-    return PMI(text, T, B, unique, counts) if weights else (unique, counts)
+    list_of_couples = reduce(lambda x, y: x + y,
+                             [get_neighbours(configuration, i, side_length)
+                              for i in range(side_length, len(configuration.text) - (1+side_length))])
+    counter = create_counter(list_of_couples)
+    encodings = np.array([get_encode(counter, word, configuration.T) for word in configuration.B]).T
+    df = pd.DataFrame(encodings, columns=configuration.B)
+    return PMI(configuration, df) if weights else df
 
 
 def PCA(matrix: Matrix, T: list[str]):
     kpca = KernelPCA(n_components=len(T), kernel='rbf')
-    X_train = kpca.fit_transform(matrix)
+    X_train = kpca.fit_transform(matrix.iloc[:, 1:])
     return matrix
 
 
@@ -69,22 +94,27 @@ def get_text(file_name: str) -> str:
     return res
 
 
-def tp1(file_name: str, fileB: str, fileT: str) -> tuple[Plot, Similar]:
+def get_datas(file_name: str, fileB: str, fileT: str) -> Data:
     text = preprocess(get_text(file_name))
     B = get_word_set(fileB)  # word vector basis
     T = get_word_set(fileT)  # word for similarity and clustering
-    point_wise_mutual_information = None
-    com = co_occurence_matrix(text, T, B, weights=point_wise_mutual_information, window=5)
-    plot = PCA(com, T)
+    return Data(text, B, T)
+
+
+def tp1(file_name: str, fileB: str, fileT: str) -> tuple[Plot, Similar]:
+    configuration = get_datas(file_name, fileB, fileT)
+    point_wise_mutual_information = False
+    com = co_occurence_matrix(configuration, weights=point_wise_mutual_information, window=5)
+    plot = PCA(com, configuration.T)
     similarities = cosine_similarity(com)  # use the PPMI co-occurence matrix
     return (plot, similarities)
 
 
-if len(sys.argv) < 3:
-    raise Exception("You should put 3 arguments: the B set, the T set and the text file")
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        raise Exception(f"You should put 3 arguments: the B set, the T set and the text file\n only got: {sys.argv}")
 
-
-tp1(sys.argv[1], sys.argv[2], sys.argv[3])
+    tp1(sys.argv[1], sys.argv[2], sys.argv[3])
 
 # TODO : check that B.txt  has exactly one word per line, no space and no empty lines
 # TODO : create a structure to federate text, B, and T
