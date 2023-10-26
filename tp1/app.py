@@ -2,6 +2,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.decomposition import KernelPCA
 from collections.abc import Callable
 from collections import namedtuple
+import matplotlib.pyplot as plt
 from functools import reduce
 import pandas as pd
 import numpy as np
@@ -83,8 +84,7 @@ def co_occurence_matrix(configuration: Data, weights, window: int) -> Matrix:
 
 def PCA(matrix: Matrix, T: list[str]):
     kpca = KernelPCA(n_components=len(T), kernel='rbf')
-    X_train = kpca.fit_transform(matrix.iloc[:, 1:])
-    return matrix
+    return kpca.fit_transform(matrix.iloc[:, 1:])
 
 
 def get_text(file_name: str) -> str:
@@ -106,7 +106,7 @@ def tp1(file_name: str, fileB: str, fileT: str) -> tuple[Plot, Similar]:
     point_wise_mutual_information = False
     com = co_occurence_matrix(configuration, weights=point_wise_mutual_information, window=5)
     plot = PCA(com, configuration.T)
-    similarities = cosine_similarity(com)  # use the PPMI co-occurence matrix
+    similarities = cosine_similarity(com)  # use the (PPMI) co-occurence matrix
     return (plot, similarities)
 
 
@@ -114,8 +114,12 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         raise Exception(f"You should put 3 arguments: the B set, the T set and the text file\n only got: {sys.argv}")
 
-    tp1(sys.argv[1], sys.argv[2], sys.argv[3])
+    plot, similarities = tp1(sys.argv[1], sys.argv[2], sys.argv[3])
+    plt.imshow(plot, cmap='viridis')  # cmap est la colormap, vous pouvez la personnaliser
+    plt.colorbar()
+    plt.title("Embedding of all target words")
+    plt.show()
+    print("similarities:", similarities)
 
 # TODO : check that B.txt  has exactly one word per line, no space and no empty lines
-# TODO : create a structure to federate text, B, and T
-# TODO : use dataframe for a better piping
+# TODO : use dataframe for a better chaining
