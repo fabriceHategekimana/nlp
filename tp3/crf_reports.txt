@@ -1,0 +1,15 @@
+da_ddt-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.19      0.10      0.13        90
+       B-ORG       0.30      0.16      0.21       172
+       B-PER       0.32      0.19      0.24       184
+       I-LOC       0.00      0.00      0.00         4
+       I-ORG       0.06      0.02      0.03        55
+       I-PER       0.21      0.09      0.12       139
+           O       0.95      0.99      0.97      9379
+
+    accuracy                           0.93     10023
+   macro avg       0.29      0.22      0.24     10023
+weighted avg       0.91      0.93      0.92     10023
+
