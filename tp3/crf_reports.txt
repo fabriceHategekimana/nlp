@@ -13,3 +13,112 @@ da_ddt-ud
    macro avg       0.29      0.22      0.24     10023
 weighted avg       0.91      0.93      0.92     10023
 
+en_ewt-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.24      0.12      0.16       317
+       B-ORG       0.21      0.05      0.08       322
+       B-PER       0.28      0.19      0.23       449
+       I-LOC       0.00      0.00      0.00        72
+       I-ORG       0.59      0.06      0.11       276
+       I-PER       0.07      0.01      0.02       243
+           O       0.94      0.99      0.96     23418
+
+    accuracy                           0.93     25097
+   macro avg       0.34      0.20      0.22     25097
+weighted avg       0.90      0.93      0.91     25097
+
+hr_set-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.40      0.38      0.39       597
+       B-ORG       0.41      0.42      0.42       414
+       B-OTH       0.12      0.06      0.08       133
+       B-PER       0.32      0.24      0.28       392
+       I-LOC       0.23      0.08      0.12       116
+       I-ORG       0.08      0.01      0.02       293
+       I-OTH       0.00      0.00      0.00       174
+       I-PER       0.40      0.12      0.19       264
+           O       0.94      0.98      0.96     21877
+
+    accuracy                           0.91     24260
+   macro avg       0.32      0.26      0.27     24260
+weighted avg       0.88      0.91      0.89     24260
+
+pt_bosque-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.32      0.28      0.30       317
+       B-ORG       0.30      0.33      0.31       456
+       B-PER       0.30      0.28      0.29       442
+       I-LOC       0.00      0.00      0.00       181
+       I-ORG       0.24      0.02      0.03       430
+       I-PER       0.14      0.03      0.05       320
+           O       0.95      0.98      0.97     25458
+
+    accuracy                           0.92     27604
+   macro avg       0.32      0.27      0.28     27604
+weighted avg       0.90      0.92      0.91     27604
+
+sk_snk-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.00      0.00      0.00       326
+       B-ORG       0.04      0.02      0.03        50
+       B-PER       0.31      0.17      0.22       539
+       I-LOC       0.00      0.00      0.00        76
+       I-ORG       0.00      0.00      0.00        80
+       I-PER       0.10      0.01      0.01       316
+           O       0.90      0.99      0.94     11349
+
+    accuracy                           0.89     12736
+   macro avg       0.19      0.17      0.17     12736
+weighted avg       0.82      0.89      0.85     12736
+
+sr_set-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.47      0.61      0.53       387
+       B-ORG       0.62      0.60      0.61       251
+       B-OTH       0.41      0.17      0.24        54
+       B-PER       0.27      0.19      0.22       209
+       I-LOC       0.57      0.24      0.33        55
+       I-ORG       0.11      0.01      0.01       177
+       I-OTH       0.00      0.00      0.00        78
+       I-PER       0.36      0.07      0.12       144
+           O       0.94      0.98      0.96     10066
+
+    accuracy                           0.90     11421
+   macro avg       0.42      0.32      0.34     11421
+weighted avg       0.88      0.90      0.89     11421
+
+sv_talbanken-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.28      0.18      0.22       132
+       B-ORG       0.46      0.19      0.27        31
+       B-PER       0.07      0.09      0.08        33
+       I-LOC       0.00      0.00      0.00         5
+       I-ORG       0.00      0.00      0.00        15
+       I-PER       0.00      0.00      0.00        25
+           O       0.99      0.99      0.99     20136
+
+    accuracy                           0.98     20377
+   macro avg       0.26      0.21      0.22     20377
+weighted avg       0.98      0.98      0.98     20377
+
+zh_gsdsimp-ud
+              precision    recall  f1-score   support
+
+       B-LOC       0.47      0.44      0.45       429
+       B-ORG       0.23      0.04      0.07       129
+       B-PER       0.43      0.42      0.43       205
+       I-LOC       0.58      0.38      0.46       337
+       I-ORG       0.54      0.25      0.34       183
+       I-PER       0.40      0.26      0.31       124
+           O       0.94      0.98      0.96     10605
+
+    accuracy                           0.90     12012
+   macro avg       0.51      0.39      0.43     12012
+weighted avg       0.89      0.90      0.89     12012
+

@@ -31,10 +31,8 @@ for dataset in datasets:
 
     # for spacy
     tokens_testing, labels_testing = open_file(testing_file)
-
     report_crf = test_crf(model, tokens_testing, labels_testing)
     report_spacy = test_spacy(tokens_testing, labels_testing, language)
-
     with open("crf_reports.txt", "a") as report:
         report.write(name+"\n")
         report.write(report_crf)
